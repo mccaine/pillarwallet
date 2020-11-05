@@ -65,6 +65,8 @@ import Button from 'components/Button';
 import PercentsInputAccessoryHolder from 'components/PercentsInputAccessory/PercentsInputAccessoryHolder';
 import Modal from 'components/Modal';
 
+import { GraphFailureToggle } from 'services/theGraph';
+
 // utils
 import { getThemeByType, defaultTheme } from 'utils/themes';
 import { log } from 'utils/logger';
@@ -303,6 +305,7 @@ class App extends React.Component<Props, *> {
                 language={i18next.language}
                 onNavigationStateChange={this.closeModalsOnScreenChange}
               />
+              <GraphFailureToggle />
               {!!getEnv().SHOW_THEME_TOGGLE &&
               <Button
                 title={`THEME: ${current}`} // eslint-disable-line i18next/no-literal-string

@@ -17,8 +17,28 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
+import React, { useState } from 'react';
+
+import Button from 'components/Button';
 import axios from 'axios';
 import { reportLog } from 'utils/common';
+
+class RetryDebug {
+  static failRequest = false;
+}
+
+export const GraphFailureToggle = () => {
+  const [fail, setFail] = useState(true);
+  RetryDebug.failRequest = fail;
+
+  return (
+    <Button
+      // eslint-disable-next-line i18next/no-literal-string
+      title={`The Graph query error: ${fail ? 'on' : 'off'}`}
+      onPress={() => setFail(!fail)}
+    />
+  );
+};
 
 export class GraphQueryError extends Error {
   subgraphName: string;
@@ -36,6 +56,11 @@ export class GraphQueryError extends Error {
 }
 
 export const callSubgraph = (subgraphName: string, query: string) => {
+  if (RetryDebug.failRequest) {
+    console.log('\x1b[7;91m debug query error \x1b[m', subgraphName);
+    return Promise.reject(new GraphQueryError(subgraphName, query, new Error()));
+  }
+
   // eslint-disable-next-line i18next/no-literal-string
   const url = `https://api.thegraph.com/subgraphs/name/${subgraphName}`;
   return axios
